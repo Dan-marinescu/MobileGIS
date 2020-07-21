@@ -94,9 +94,9 @@ export default class App extends Component<{}, State>  {
 
   routingEvent = event =>{
     const {rMarkers,markers} = this.state
-    var rMarkers2 = [markers]
-    //console.log('check')
-   // console.log(rMarkers2)
+    var rMarkers2 = markers.slice()
+    console.log('check')
+    console.log(rMarkers2)
     this.setState({rMarkers:rMarkers2})
     this.setState({markers:[]})
 
@@ -140,9 +140,9 @@ export default class App extends Component<{}, State>  {
         )}
         <Control position="topleft" >
           <button 
-            onClick={ () => this.setState({markers:[]}) }
+            onClick={ () => this.setState({markers:[],rMarkers:[]}) }
           >
-            Reset Markers
+            Reset
           </button>
         </Control>
          <Control position="topleft" >
