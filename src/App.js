@@ -1,12 +1,12 @@
 //@flow
 import React, {createRef, Component } from 'react';
 import './App.css';
-import L from 'leaflet';
+import L, { Point } from 'leaflet';
 import { Map, TileLayer, Marker, Popup } from 'react-leaflet';
 import icon from 'leaflet/dist/images/marker-icon.png';
 import Routing from "./routingMachine";
 import Control from 'react-leaflet-control';
-
+import p5 from 'p5';
 
 let DefaultIcon = L.icon({
     iconUrl: icon,
@@ -24,6 +24,13 @@ type State = {
 }*/
 
 export default class App extends Component<{}, State>  {
+  // componentDidMount() {
+  //   const script = document.createElement("script");
+  //   script.async = true;
+  //   script.src = "https://cdn.jsdelivr.net/npm/p5@1.0.0/lib/p5.min.js";
+
+  //   this.div.appendChild(script);
+  // }
  /* constructor()
   {
     this.routing = <Routing name="routeM" map={this.map} pointM={this.state.markers} />
@@ -93,15 +100,81 @@ export default class App extends Component<{}, State>  {
   }
 
   routingEvent = event =>{
+  
     const {rMarkers,markers} = this.state
     var rMarkers2 = [markers]
-    //console.log('check')
-   // console.log(rMarkers2)
-    this.setState({rMarkers:rMarkers2})
-    this.setState({markers:[]})
+    // console.log('check')
+  //  console.log(rMarkers2)
 
-    //markers.push(e.latlng)
-  }
+
+    function generatePermutations(Arr){
+        var permutations = [];
+        var A = Arr.slice();
+      
+        function swap(a,b){
+          var tmp = A[a];
+          A[a] = A[b];
+          A[b] = tmp;
+        }
+      
+        function generate(n, A){
+          if (n == 1){
+            permutations.push(A.slice());
+          } else {
+            for(var i = 0; i <= n-1; i++) {
+              generate(n-1, A);
+              swap(n % 2 == 0 ? i : 0 ,n-1);
+            }
+          }
+        }
+        
+        generate(A.length, A);
+        return permutations;
+      }
+
+            
+      var x = generatePermutations([[11,11],[2,2],[3,3],[5,6],[4,4],[13,13],[14,14]]);
+      var l = [];
+      if(x.length <2){
+        console.log("no dist");
+      }
+
+      x.forEach(e=>{
+        var sum=0;
+        for(var i=0; i < e.length-1 ; i++){
+          sum+=distance(e[i][1], e[i][0], e[i+1][1], e[i+1][0], 'K');
+        }
+        l.push(sum);
+      });
+      console.log(l);
+      console.log(Math.min.apply(null,l));
+      var shit = Math.min.apply(null,l);
+      var route = l.indexOf(shit);
+      console.log(x[route]);
+      return(x[route]);
+
+      function distance(lat1, lon1, lat2, lon2, unit) {
+        var radlat1 = Math.PI * lat1/180
+        var radlat2 = Math.PI * lat2/180
+        var radlon1 = Math.PI * lon1/180
+        var radlon2 = Math.PI * lon2/180
+        var theta = lon1-lon2
+        var radtheta = Math.PI * theta/180
+        var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+        dist = Math.acos(dist)
+        dist = dist * 180/Math.PI
+        dist = dist * 60 * 1.1515
+        if (unit=="K") { dist = dist * 1.609344 }
+        if (unit=="N") { dist = dist * 0.8684 }
+        return dist
+}
+
+
+
+  this.setState({rMarkers:rMarkers2})
+  this.setState({markers:[]})
+
+}
 
    handleClick = event => {
     const { lat, lng } = event.latlng
@@ -115,6 +188,10 @@ export default class App extends Component<{}, State>  {
     })
   }
 
+
+  
+
+
   render(){
     const marker = this.state.hasLocation ? (
       <Marker position={this.state.latlng}>
@@ -124,6 +201,7 @@ export default class App extends Component<{}, State>  {
 
 
     return (
+
       <Map className="map" onClick={this.handleClick}  ref= {this.saveMap}
         onLocationfound={this.handleLocationFound}
        center={this.state.latlng} zoom={13}>
@@ -160,8 +238,4 @@ export default class App extends Component<{}, State>  {
     );
   }
 }
-        //{this.state.isMapInit && <Routing name="routeM" map={this.map} pointM={this.state.markers} />}
- // {this.state.isMapInit && this.state.routing.map(()=>{
-  //         <Routing name="routeM" map={this.map} pointM={this.state.markers} />
-   //     })}
-//export default App;
+
