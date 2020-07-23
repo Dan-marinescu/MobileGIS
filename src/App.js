@@ -102,6 +102,7 @@ export default class App extends Component<{}, State>  {
   routingEvent = event =>{
   
     const {rMarkers,markers} = this.state
+<<<<<<< HEAD
     var rMarkers2 = [markers]
     // console.log('check')
   //  console.log(rMarkers2)
@@ -168,6 +169,13 @@ export default class App extends Component<{}, State>  {
         if (unit=="N") { dist = dist * 0.8684 }
         return dist
 }
+=======
+    var rMarkers2 = markers.slice()
+    console.log('check')
+    console.log(rMarkers2)
+    this.setState({rMarkers:rMarkers2})
+    this.setState({markers:[]})
+>>>>>>> 0e18d7fdf69bddeafb2b9d06c5971adffbd620fa
 
 
 
@@ -218,9 +226,9 @@ export default class App extends Component<{}, State>  {
         )}
         <Control position="topleft" >
           <button 
-            onClick={ () => this.setState({markers:[]}) }
+            onClick={ () => this.setState({markers:[],rMarkers:[]}) }
           >
-            Reset Markers
+            Reset
           </button>
         </Control>
          <Control position="topleft" >
