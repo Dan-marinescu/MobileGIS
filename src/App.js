@@ -102,7 +102,6 @@ export default class App extends Component<{}, State>  {
   routingEvent = event =>{
   
     const {rMarkers,markers} = this.state
-<<<<<<< HEAD
     var rMarkers2 = [markers]
     // console.log('check')
   //  console.log(rMarkers2)
@@ -151,8 +150,8 @@ export default class App extends Component<{}, State>  {
       console.log(Math.min.apply(null,l));
       var shit = Math.min.apply(null,l);
       var route = l.indexOf(shit);
-      console.log(x[route]);
-      return(x[route]);
+      console.log(x[route])
+      // return(x[route]);
 
       function distance(lat1, lon1, lat2, lon2, unit) {
         var radlat1 = Math.PI * lat1/180
@@ -169,13 +168,6 @@ export default class App extends Component<{}, State>  {
         if (unit=="N") { dist = dist * 0.8684 }
         return dist
 }
-=======
-    var rMarkers2 = markers.slice()
-    console.log('check')
-    console.log(rMarkers2)
-    this.setState({rMarkers:rMarkers2})
-    this.setState({markers:[]})
->>>>>>> 0e18d7fdf69bddeafb2b9d06c5971adffbd620fa
 
 
 
@@ -226,9 +218,9 @@ export default class App extends Component<{}, State>  {
         )}
         <Control position="topleft" >
           <button 
-            onClick={ () => this.setState({markers:[],rMarkers:[]}) }
+            onClick={ () => this.setState({markers:[]}) }
           >
-            Reset
+            Reset Markers
           </button>
         </Control>
          <Control position="topleft" >
