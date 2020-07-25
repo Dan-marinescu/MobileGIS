@@ -39,6 +39,7 @@ export default class App extends Component<{}, State>  {
   state = {
     isMapInit: false,
     hasLocation: false,
+    flag: true,
     latlng: {
       lat: 31.0461,
       lng: 34.8516,
@@ -89,9 +90,11 @@ export default class App extends Component<{}, State>  {
   //map = L.map('map');
 
   addMarker = (e) => {
-    const {markers} = this.state
-    markers.push(e.latlng)
-    this.setState({markers})
+    const {markers,flag} = this.state
+    if(flag){
+      markers.push(e.latlng)
+      this.setState({markers})
+    }
     //console.log(markers)
     //this.forceUpdate()
    // const el = document.getElementById("div22")
@@ -100,21 +103,26 @@ export default class App extends Component<{}, State>  {
   }
 
   routingEvent = event =>{
-  
-    const {rMarkers,markers} = this.state
+    
+    const {rMarkers,markers,flag} = this.state
     let rMarkers2 = markers.slice()
     const map = this.map
-    console.log(map)
+    // console.log(map)
     let pointer = this
     let myLocation=null
-    if(map!=null)
+    if(map!=null&& flag==true)
     {
-        myLocation = map.leafletElement.locate({setView:true,maxZoom:16}).on('locationfound',function(e){
+
+
+        myLocation = map.leafletElement.locate({setView:false,maxZoom:16}).on('locationfound',function(e){
         //console.log('loction bitch')
         //console.log(e.latlng)
         rMarkers2.unshift(e.latlng)
-        pointer.setState({rMarkers:rMarkers2})
-        pointer.setState({markers:[]})
+        if(rMarkers2.length>=2){
+          pointer.setState({rMarkers:rMarkers2,markers:[],flag:false})
+        }else{
+          console.log("not enough points");
+        }
         //console.log('END')
 
       });
@@ -139,7 +147,9 @@ export default class App extends Component<{}, State>  {
     })
   }
 
-
+  updateRoute = () =>{
+    this.setState({markers:[],rMarkers:[],flag:true})
+  }
   
 
 
@@ -169,7 +179,9 @@ export default class App extends Component<{}, State>  {
         )}
         <Control position="topleft" >
           <button 
-            onClick={ () => this.setState({markers:[],rMarkers:[]}) }
+            onClick={  
+              this.updateRoute
+              }
           >
             Reset Markers
           </button>
@@ -181,8 +193,8 @@ export default class App extends Component<{}, State>  {
           
         </Control>
 
-
-        {this.state.isMapInit && <Routing id="routeI" name="routeM" map={this.map} pointM={this.state.rMarkers} /> }
+        <Routing mapInit = {this.state.isMapInit}  id="routeI" name="routeM" map={this.map} pointM={this.state.rMarkers} /> 
+        {/* {this.state.isMapInit} */}
 
       </Map>
    

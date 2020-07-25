@@ -2,18 +2,18 @@ import { MapLayer } from "react-leaflet";
 import L from "leaflet";
 import "leaflet-routing-machine";
 import { withLeaflet } from "react-leaflet";
-
+import React from 'react';
 class Routing extends MapLayer {
   //markers = {};
 
 
   constructor(props) {
     super(props);
-    this.state = {
-    };
+    // this.routing = null;
   }
 
   createLeafletElement() {
+    console.log("mila");
     const { map ,pointM} = this.props;
  //   const { markers } = this.state.markers;
     //console.log(markers);
@@ -27,7 +27,7 @@ class Routing extends MapLayer {
     }).addTo(map.leafletElement);
 
 
-   // this.routing = leafletElement;
+   this.routing = leafletElement;
 
 
     return leafletElement.getPlan();
@@ -35,14 +35,31 @@ class Routing extends MapLayer {
   componentDidMount() {
       console.log("update")
   }
-  componentDidUpdate({ markers }) {
+  shouldComponentUpdate() {
+    console.log('Greeting - shouldComponentUpdate lifecycle');
 
-    const { map ,pointM} = this.props;
-
-    if (this.routing) {
+    return false;
+  }
+  componentWillUnmount() {
+    console.log("unmount");
+    if (this.props.map) {
       this.props.map.leafletElement.removeControl(this.routing);
       //L.DomEvent.off(this.props.map.leafletElement, 'click', this.createPopupsHandler);
     }
+  }
+
+
+  componentDidUpdate({ markers }) {
+
+    const { map ,pointM,routing} = this.props;
+    console.log("###");
+    console.log(this.routing==null);
+    // if (this.routing != null) {
+    //   // this.props.map.leafletElement
+    //   this.props.map.leafletElement.removeControl(this.routing);
+    //   this.routing = null;
+    //   //L.DomEvent.off(this.props.map.leafletElement, 'click', this.createPopupsHandler);
+    // }
     /*console.log("update2")
     console.log(this.routing);
 
@@ -87,13 +104,14 @@ class Routing extends MapLayer {
       var x = generatePermutations(Points);
       var l = [];
       if(x.length <2){
-          console.log("no dist");
-        
-        let leafletElement = L.Routing.control({
-                    waypoints: []
-                  }).addTo(map.leafletElement);
-                  this.routing = leafletElement;
-                  return leafletElement.getPlan();
+        console.log("no dist");
+        console.log(this.routing);
+        this.routing.setWaypoints([]);
+        // let leafletElement = L.Routing.control({
+        //             waypoints: []
+        //           }).addTo(map.leafletElement);
+        //           this.routing = leafletElement;
+        //           return leafletElement.getPlan();
        
       }
       else{
@@ -113,15 +131,17 @@ class Routing extends MapLayer {
           });
         //  console.log(l);
         // // console.log(Math.min.apply(null,l));
-          var shit = Math.min.apply(null,l);
-          var route = l.indexOf(shit);
+          var route = l.indexOf(Math.min.apply(null,l));
          // console.log(x[route])
           // return(x[route]);
-          let leafletElement = L.Routing.control({
-            waypoints: x[route]
-          }).addTo(map.leafletElement);
-          this.routing = leafletElement;
-          return leafletElement.getPlan();
+
+          this.routing.setWaypoints(x[route]);
+          console.log(x[route]);
+          // let leafletElement = L.Routing.control({
+          //   waypoints: x[route]
+          // }).addTo(map.leafletElement);
+          // this.routing = leafletElement;
+          // return leafletElement.getPlan();
         
       }
 
@@ -142,17 +162,10 @@ class Routing extends MapLayer {
       }
 
   }
+  render(){
+    return <div></div>;
+  }
 
-
- 
-/*
-  componentWillUnmount() {
-    console.log("unmount");
-    if (this.props.map) {
-      this.props.map.leafletElement.removeControl(this.routing);
-      //L.DomEvent.off(this.props.map.leafletElement, 'click', this.createPopupsHandler);
-    }
-  }*/
 
 
 }
